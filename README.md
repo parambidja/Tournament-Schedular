@@ -1,6 +1,6 @@
 # Tournament Schedule Maker
 
-This is a tool to help make a tournament schedule maker for any type of competition. It will create matchups that use a round-robin type of scheduling, which is considered the standard for such tournaments. We make the following assumptions:
+This is a tool to help make a tournament schedule for any type of competition. It will create matchups that use a round-robin type of scheduling, which is considered the standard for such tournaments. We make the following assumptions:
 * there are an even number of teams
 * the number of games per team < the number of total teams
 * the number of courts <= # of teams/2
@@ -9,11 +9,9 @@ Under these conditions, you can expect an evenly distributed set of games that f
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
-Python 3.X
+python 3.x
 
 ## Running the tests
 

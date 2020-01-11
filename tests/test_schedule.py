@@ -34,8 +34,3 @@ class ScheduleTests(unittest.TestCase):
         self.assertTrue(len(result) == 6)
         for round in result:
             self.assertTrue(len(round) == 2)
-
-        for round in result:
-            print("=== Round ===")
-            for game in round:
-                print(game)

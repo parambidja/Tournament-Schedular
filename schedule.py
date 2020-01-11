@@ -54,7 +54,6 @@ class Schedule:
         curr_court = 1
 
         while(curr_game_i < len(games)):
-            print("Curr game: " + str(curr_game_i))
             curr_matchup_tup = games[curr_game_i]
 
             if(len(curr_round) == self._nCourts):

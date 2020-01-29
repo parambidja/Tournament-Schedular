@@ -11,4 +11,4 @@ class Game                                          :
         self._endTime    = endTime
 
     def __str__(self):
-        return "Game {}, Court: {}, Round: {}, Start time: {}, End time: {}, Home team: {}, Away team: {}".format(self._gameId, self._courtId, self._round, self._startTime, self._endTime, self._homeTeamId, self._awayTeamId)
+        return "Game {}, League: {}, Court: {}, Round: {}, Start time: {}, End time: {}, Home team: {}, Away team: {}".format(self._gameId, self._leagueType, self._courtId, self._round, self._startTime, self._endTime, self._homeTeamId, self._awayTeamId)

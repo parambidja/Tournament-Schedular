@@ -23,11 +23,9 @@ class Schedule:
     def generate(self):
         k1Matchups = self.generate_matchups(list(self._teamsK1.keys()))
         k2Matchups = self.generate_matchups(list(self._teamsK2.keys()))
-        # print(k1Matchups)
         return self.make_schedule(k1Matchups, k2Matchups)
 
     def generate_matchups(self, teams):
-        # teams = list(self._teams.keys())
         all_games = list()
 
         for round in range(self._nGames):
@@ -171,6 +169,22 @@ class Schedule:
 
         output.close();
 
+    def writeToDBSchema(self, filename = 'output/database_schedule.xlsx'):
+        if not os.path.exists('output'):
+            os.makedirs('output')
 
-    def writeToDatabase(self):
-        pass
+        output = xlsxwriter.Workbook(filename)
+        worksheet = output.add_worksheet()
+
+        headers = ['Game ID', 'League Type', 'Court', 'Home Team', 'Away Team', 'Start Time', 'End Time']
+        for n in range(len(headers)):
+            worksheet.write(0, n, headers[n])
+
+        row = 0
+        for round in self._rounds:
+            for game in round:
+                row += 1
+                fields = [game._gameId, game._leagueType, game._courtId, game._homeTeamId, game._awayTeamId, str(game._startTime), str(game._endTime)]
+                for n in range(len(fields)):
+                    worksheet.write(row, n, fields[n])
+        output.close();

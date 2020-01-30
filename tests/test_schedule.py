@@ -36,7 +36,7 @@ class ScheduleTests(unittest.TestCase):
             self.assertTrue(len(round) == 5)
 
     def test_generate_edge_case(self):
-        mock_schedule = Schedule(range(1,8), range(8,14), 62, 34, 4, datetime.strptime("10:00", '%H:%M'), timedelta(minutes=15))
+        mock_schedule = Schedule(range(1,8), range(8,14), 62, 34, 4, datetime.strptime("2/8/2020 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=15))
         result = mock_schedule.generate()
         gameCount = 0
         for round in result:
@@ -45,6 +45,7 @@ class ScheduleTests(unittest.TestCase):
         self.assertTrue(gameCount == 192)
 
     def test_write_to_excel(self):
-        mock_schedule = Schedule(range(7,15), range(1,7), 76, 34, 5, datetime.strptime("10:00", '%H:%M'), timedelta(minutes=15))
+        mock_schedule = Schedule(range(7,15), range(1,7), 76, 36, 5, datetime.strptime("2/8/2020 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=25))
         mock_schedule.generate()
         mock_schedule.writeToCsv()
+        mock_schedule.writeToDBSchema()

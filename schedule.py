@@ -5,7 +5,7 @@ import xlsxwriter
 import os
 
 class Schedule:
-    def __init__(self, courtRangeK1, courtRangeK2, nTeamsK1, nTeamsK2, nGames, startTime, gameLength):
+    def __init__(self, courtRangeK1, courtRangeK2, nTeamsK1, nTeamsK2, nGames, startTime, gameLength, gapStart=None, gapEnd=None):
         self._nCourtsK1    = len(courtRangeK1)
         self._nCourtsK2    = len(courtRangeK2)
         self._nTeamsK1     = nTeamsK1
@@ -13,6 +13,8 @@ class Schedule:
         self._nGames       = nGames
         self._startTime    = startTime
         self._gameLength   = gameLength
+        self._gapStart     = gapStart
+        self._gapEnd       = gapEnd
         self._rounds       = list() # a single round is a list of Games played simultaneously
         self._numLeagues   = 1
         self._courtRangeK1 = courtRangeK1
@@ -60,9 +62,15 @@ class Schedule:
         currGameK2 = 0
         currCourt = 1
         currGame = 1
+        gapChanged = False
         while currGameK1 < len(k1Matchups) or currGameK2 < len(k2Matchups):
             currRound = list()
             for currCourt in range(1, self._nCourtsK1 + self._nCourtsK2 + 1):
+                if self._gapStart and not gapChanged and currTime >= self._gapStart:
+                    print('changing the time')
+                    currTime = self._gapEnd
+                    gapChanged = True
+
                 currMatchup = None
                 if currCourt in self._courtRangeK1:
                     if currGameK1 < len(k1Matchups):
@@ -169,6 +177,14 @@ class Schedule:
 
         output.close();
 
+        teamWiseOutput = xlsxwriter.Workbook('output/team_wise_schedule.xlsx')
+        for team in self._teamsK1.values():
+            team.writeToCsv(teamWiseOutput)
+        for team in self._teamsK2.values():
+            team.writeToCsv(teamWiseOutput)
+
+        teamWiseOutput.close()
+
     def writeToDBSchema(self, filename = 'output/database_schedule.xlsx'):
         if not os.path.exists('output'):
             os.makedirs('output')
@@ -184,7 +200,7 @@ class Schedule:
         for round in self._rounds:
             for game in round:
                 row += 1
-                fields = [game._gameId, game._leagueType, game._courtId, game._homeTeamId, game._awayTeamId, str(game._startTime), str(game._endTime)]
+                fields = [game._gameId, game._leagueType, game._courtId, game._homeTeamId, game._awayTeamId, game._startTime.strftime("%Y-%m-%d %H:%M:%S"), game._endTime.strftime("%Y-%m-%d %H:%M:%S")]
                 for n in range(len(fields)):
                     worksheet.write(row, n, fields[n])
         output.close();

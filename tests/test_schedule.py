@@ -38,14 +38,35 @@ class ScheduleTests(unittest.TestCase):
     def test_generate_edge_case(self):
         mock_schedule = Schedule(range(1,8), range(8,14), 62, 34, 4, datetime.strptime("2/8/2020 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=15))
         result = mock_schedule.generate()
+        self.assert_no_dup_teams_in_round(result)
         gameCount = 0
         for round in result:
             gameCount += len(round)
             self.assertTrue(len(round) <= 13)
         self.assertTrue(gameCount == 192)
 
-    def test_write_to_excel(self):
-        mock_schedule = Schedule(range(7,15), range(1,7), 76, 36, 5, datetime.strptime("2/8/2020 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=25))
-        mock_schedule.generate()
+    def test_final_schedule(self):
+        mock_schedule = Schedule(range(7,15), range(1,7), 76, 34, 5, datetime.strptime("2/8/2020 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=25), datetime.strptime("2/8/2020 14:10", '%m/%d/%Y %H:%M'), datetime.strptime("2/8/2020 15:35", '%m/%d/%Y %H:%M'))
+        result = mock_schedule.generate()
+        self.assert_no_dup_teams_in_round(result)
         mock_schedule.writeToCsv()
         mock_schedule.writeToDBSchema()
+
+    def assert_no_dup_teams_in_round(self, rounds):
+        for round in rounds:
+            k1Teams = set()
+            k2Teams = set()
+            for game in round:
+                league = game._leagueType
+                awayTeam = game._awayTeamId
+                homeTeam = game._homeTeamId
+                if league == 'K1':
+                    self.assertFalse(game._awayTeamId in k1Teams)
+                    self.assertFalse(game._homeTeamId in k1Teams)
+                    k1Teams.add(game._awayTeamId)
+                    k1Teams.add(game._homeTeamId)
+                elif league == 'K2':
+                    self.assertFalse(game._awayTeamId in k2Teams)
+                    self.assertFalse(game._homeTeamId in k2Teams)
+                    k2Teams.add(game._awayTeamId)
+                    k2Teams.add(game._homeTeamId)

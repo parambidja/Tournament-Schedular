@@ -67,7 +67,6 @@ class Schedule:
             currRound = list()
             for currCourt in range(1, self._nCourtsK1 + self._nCourtsK2 + 1):
                 if self._gapStart and not gapChanged and currTime >= self._gapStart:
-                    print('changing the time')
                     currTime = self._gapEnd
                     gapChanged = True
 
@@ -115,7 +114,10 @@ class Schedule:
 
     # writes the master schedule to csv
     # also creates a seperate schedule for each Team
-    def writeToCsv(self, filename = 'output/master_schedule.xlsx'):
+    def writeToCsv(self, filename=None):
+        if not filename:
+            filename = 'output/master_schedule_{}.xlsx'.format(self._startTime.year)
+
         if not os.path.exists('output'):
             os.makedirs('output')
 
@@ -128,7 +130,7 @@ class Schedule:
 
         totalCourts = self._nCourtsK1 + self._nCourtsK2
         worksheet.merge_range(0, 0, 0, totalCourts + 1, '|| Swami Shreeji ||', merge_format)
-        worksheet.merge_range(1, 0, 1, totalCourts + 1, 'Yogi Cup 2019 Schedule', merge_format)
+        worksheet.merge_range(1, 0, 1, totalCourts + 1, 'Yogi Cup {} Schedule'.format(self._startTime.year), merge_format)
         worksheet.write(2, 0, "Start Time")
         worksheet.write(2, 1, "End Time")
 
@@ -177,7 +179,7 @@ class Schedule:
 
         output.close();
 
-        teamWiseOutput = xlsxwriter.Workbook('output/team_wise_schedule.xlsx')
+        teamWiseOutput = xlsxwriter.Workbook('output/team_wise_schedule_{}.xlsx'.format(self._startTime.year))
         for team in self._teamsK1.values():
             team.writeToCsv(teamWiseOutput)
         for team in self._teamsK2.values():
@@ -185,7 +187,10 @@ class Schedule:
 
         teamWiseOutput.close()
 
-    def writeToDBSchema(self, filename = 'output/database_schedule.xlsx'):
+    def writeToDBSchema(self, filename=None):
+        if not filename:
+            filename = 'output/database_schedule_{}.xlsx'.format(self._startTime.year)
+
         if not os.path.exists('output'):
             os.makedirs('output')
 

@@ -52,6 +52,13 @@ class ScheduleTests(unittest.TestCase):
         mock_schedule.writeToCsv()
         mock_schedule.writeToDBSchema()
 
+    def test_final_schedule_2022(self):
+        mock_schedule = Schedule(range(7,15), range(1,7), 72, 40, 5, datetime.strptime("1/8/2022 10:00", '%m/%d/%Y %H:%M'), timedelta(minutes=25), datetime.strptime("1/8/2022 14:10", '%m/%d/%Y %H:%M'), datetime.strptime("1/8/2022 15:30", '%m/%d/%Y %H:%M'))
+        result = mock_schedule.generate()
+        self.assert_no_dup_teams_in_round(result)
+        mock_schedule.writeToCsv()
+        mock_schedule.writeToDBSchema()
+
     def assert_no_dup_teams_in_round(self, rounds):
         for round in rounds:
             k1Teams = set()
